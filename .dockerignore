@@ -1,0 +1,9 @@
+node_modules
+.env
+.git
+data
+coverage
+*.mp4
+*.mov
+*.mkv
+*.mp3
