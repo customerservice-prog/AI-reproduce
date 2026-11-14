@@ -12,6 +12,7 @@ import { pipeline } from 'node:stream/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { buildVideoPrompt, validateMusic, safeProviderUrl, publicJob, VIDEO_PRESETS } from './logic.js';
+import { createLocalRouter } from './local-engine.js';
 
 const exec = promisify(execFile);
 const app = express();
@@ -313,6 +314,12 @@ async function refreshJob(job) {
   refreshing.set(job.id, task);
   try { return await task; } finally { refreshing.delete(job.id); }
 }
+app.use('/api', createLocalRouter({tmp:TMP,out:OUT,setJob,freshJob}));
+// Local jobs may be interrupted during deployments: mark them failed instead of polling forever.
+for (const job of Object.values(jobs)) if (job.provider === 'local' && job.status === 'processing') {
+  job.status='failed'; job.error='The server restarted during this job. Please submit it again.';
+}
+
 app.get('/api/jobs', async (_req,res,next) => {
   try {
     const list = Object.values(jobs).sort((a,b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 50);
