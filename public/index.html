@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080a12">
+  <title>Bajo Mundo AI Studio — Create Beyond Limits</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div id="loginView" class="login-view">
+    <div class="login-card">
+      <div class="mark">BM<span>✦</span></div>
+      <p class="eyebrow">PRIVATE CREATIVE LAB</p>
+      <h1>Make the<br><em>impossible.</em></h1>
+      <p>One studio for your images, video, original music, creative ideas, and AI voice.</p>
+      <form id="loginForm">
+        <label for="password">Studio password</label>
+        <input id="password" name="password" type="password" minlength="12" autocomplete="current-password" required placeholder="Enter password">
+        <button class="button primary" type="submit">Enter the studio <span>→</span></button>
+      </form>
+      <p id="loginError" class="error" role="alert"></p>
+    </div>
+  </div>
+  <div id="studio" class="app hidden">
+    <aside class="sidebar">
+      <a href="/" class="brand"><span class="brand-icon">BM<span>✦</span></span><span>BAJO MUNDO<br><strong>AI STUDIO</strong></span></a>
+      <div class="nav-caption">WORKSPACE</div>
+      <nav id="nav">
+        <button data-mode="video" class="nav-link active"><span>◈</span> Video Reimagine</button>
+        <button data-mode="imageEdit" class="nav-link"><span>✧</span> Photo Transform</button>
+        <button data-mode="image" class="nav-link"><span>▧</span> Image Generator</button>
+        <button data-mode="music" class="nav-link"><span>♫</span> Music Creator</button>
+        <button data-mode="voice" class="nav-link"><span>◉</span> Voice Studio</button>
+        <button data-mode="writing" class="nav-link"><span>✎</span> Ideas & Scripts</button>
+      </nav>
+      <div class="side-bottom">
+        <div class="small-caption">BUILD • EXPERIMENT • CREATE</div>
+        <p>Your originals stay yours. Generating an edit does not transfer rights in someone else's content.</p>
+        <button id="logout" class="logout">Sign out ↗</button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div><span class="online-dot"></span> CREATOR WORKSPACE <span class="separator">/</span> <span id="currentMode">Video Reimagine</span></div><span class="secure-tag">PRIVATE STUDIO</span></header>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow purple">AI CREATIVE ENGINE</div>
+          <h1>Imagine it.<br><span>Make it real.</span></h1>
+          <p>Turn an idea into an image, reinvent your own footage, produce an original track, narrate a story, or brainstorm something completely new.</p>
+          <div class="hero-pills"><span>6 creative tools</span><span>Single-click creation</span><span>Download results</span></div>
+        </div>
+        <div class="hero-art" aria-hidden="true"><span class="orb orb1"></span><span class="orb orb2"></span><span class="orb orb3"></span><span class="hero-star">✦</span></div>
+      </section>
+      <section class="work-grid">
+        <div class="panel creation">
+          <div class="panel-heading"><div><div class="eyebrow">CREATE SOMETHING</div><h2 id="toolTitle">Video Reimagine</h2><p id="toolDescription"></p></div><span class="number">01 / STUDIO</span></div>
+          <form id="createForm">
+            <div id="fileWrap" class="form-field">
+              <label id="fileLabel" for="sourceFile">Your source video</label>
+              <div class="dropzone" id="dropzone">
+                <div class="drop-icon">↑</div>
+                <strong>Drop a file here or click to browse</strong>
+                <small id="fileHelp">MP4, MOV, WebM or MKV · 2–30 seconds</small>
+                <input id="sourceFile" name="file" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-matroska">
+                <div id="fileChosen" class="file-chosen"></div>
+              </div>
+            </div>
+            <div class="form-field"><label id="promptLabel" for="prompt">What do you want AI to do?</label>
+              <textarea id="prompt" name="prompt" rows="5" minlength="3" maxlength="2000" required placeholder="Describe your idea in detail..."></textarea>
+              <div class="hint" id="promptHint">Describe the visual changes you want.</div>
+            </div>
+            <div id="styleWrap" class="form-field">
+              <label for="style">Visual direction</label>
+              <select name="style" id="style"><option value="cinematic">Cinematic</option><option value="urban">Urban Night</option><option value="vintage">Vintage Film</option><option value="fantasy">Fantasy</option><option value="clean">Polished & Clean</option><option value="custom">Custom / Prompt Only</option></select>
+            </div>
+            <div id="ratioWrap" class="form-field hidden">
+              <label for="aspectRatio">Canvas shape</label><select id="aspectRatio" name="aspectRatio"><option value="16:9">Widescreen 16:9</option><option value="9:16">Vertical 9:16</option><option value="1:1">Square 1:1</option><option value="4:3">Landscape 4:3</option><option value="3:4">Portrait 3:4</option></select>
+            </div>
+            <div id="musicWrap" class="form-field hidden">
+              <label for="seconds">Song duration</label>
+              <select name="seconds" id="seconds"><option value="15">15 seconds · quick test</option><option value="30" selected>30 seconds</option><option value="60">60 seconds</option><option value="120">2 minutes</option><option value="180">3 minutes</option></select>
+              <label class="check-row"><input type="checkbox" id="instrumental" checked> Instrumental only (no vocals)</label>
+            </div>
+            <div id="voiceWrap" class="form-field hidden">
+              <label for="voice">Narration voice</label><select id="voice" name="voice"><option value="marin">Marin — clear</option><option value="cedar">Cedar — rich</option><option value="alloy">Alloy — neutral</option><option value="nova">Nova — upbeat</option><option value="onyx">Onyx — deep</option><option value="coral">Coral — bright</option></select>
+              <p class="hint">AI-generated voice. Don't impersonate real people without consent.</p>
+            </div>
+            <div id="writingWrap" class="form-field hidden">
+              <label for="writingMode">Writing task</label><select id="writingMode" name="writingMode"><option value="ideas">Brainstorm ideas</option><option value="script">Write a video script</option><option value="caption">Write social captions</option><option value="rewrite">Polish or rewrite</option><option value="translate">Translate</option></select>
+            </div>
+            <label class="check-row rights"><input id="rights" type="checkbox" required> I own or have permission to use any uploaded media, likenesses, and voices, and understand AI generation does not erase existing copyrights.</label>
+            <div id="costNote" class="cost-note"></div>
+            <div id="formError" class="error" role="alert"></div>
+            <button id="generate" class="button primary generate" type="submit"><span>✦</span> Generate with AI <span>→</span></button>
+          </form>
+        </div>
+        <div class="right-column">
+          <div class="panel inspired">
+            <div class="eyebrow">EXPERIMENT IDEAS</div><h2 id="inspirationTitle">Take it further</h2>
+            <p id="inspirationSubtitle">Not sure what to make? Try a creative prompt.</p>
+            <div id="ideas" class="ideas"></div>
+          </div>
+          <div class="panel connected">
+            <div class="eyebrow">SYSTEM STATUS</div><h2>AI engines</h2>
+            <div class="provider-row"><span>Runway <small>Video AI</small></span><span id="runwayStatus" class="provider-status">Checking</span></div>
+            <div class="provider-row"><span>Replicate <small>Images + Music</small></span><span id="replicateStatus" class="provider-status">Checking</span></div>
+            <div class="provider-row"><span>OpenAI <small>Voice + Writing</small></span><span id="openaiStatus" class="provider-status">Checking</span></div>
+            <p class="hint">API services bill separately from your website hosting. Keys are configured privately in Railway.</p>
+          </div>
+        </div>
+      </section>
+      <section class="panel gallery">
+        <div class="panel-heading"><div><div class="eyebrow">YOUR CREATIONS</div><h2>Recent generations</h2><p>Preview, download, and manage your AI creations.</p></div><button id="refresh" class="button secondary" type="button">↻ Refresh</button></div>
+        <div id="jobs" class="jobs"><div class="empty-state">Nothing created yet. Your first AI experiment begins above.</div></div>
+      </section>
+      <footer class="footer">BAJO MUNDO AI STUDIO <span>Creative technology playground • Original and properly licensed content only</span></footer>
+    </main>
+  </div>
+</body>
+</html>
