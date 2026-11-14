@@ -1,61 +1,42 @@
-# Bajo Mundo AI Studio
+# Bajo Mundo Creator Studio — No-API One-Click Mode
 
-A private, multimodal creative lab built to experiment with AI media tools. This project is separate from bajomundotv.com.
+The studio is an authenticated, single-owner media utility that works without paid third-party AI API keys.
 
-## Six creation tools
+## Working one-click tools (self-hosted)
 
-| Tool | Provider | Result |
-|---|---|---|
-| Video Reimagine | Runway Aleph 2 | MP4 |
-| Photo Transform | Replicate FLUX Kontext Pro | PNG |
-| Image Generator | Replicate FLUX Schnell | WebP |
-| Original Music | Replicate ElevenLabs Music | MP3 |
-| AI Narration | OpenAI Speech API | MP3 |
-| Ideas & Scripts | OpenAI Responses API | TXT |
+- **Auto Magic**: upload an MP4/MOV/WebM/MKV, JPG/PNG/WebP, or MP3/M4A/WAV/OGG/FLAC. The server detects whether the input is video, photo, or audio and automatically processes it.
+- **Video Enhance**: FFmpeg color/sharpness adjustments and MP4 export (up to ten minutes / 200MB).
+- **Photo Enhance**: FFmpeg contrast, color and sharpness correction; exports PNG.
+- **Audio Cleanup**: EQ, compression and loudness balancing, exports MP3.
+- **Beat Maker**: produces a short original procedural rhythm using a built-in synth.
+- **Poster Maker**: original SVG promotional graphic, optionally with a custom heading.
+- **Voice Creator**: eSpeak-NG Spanish text-to-speech, MP3 (robotic voice, not neural voice cloning).
+- **Show Templates**: deterministic, reusable TXT show outline.
 
-Includes drag-and-drop media, presets, prompt suggestions, private generation history, preview players, and downloadable outputs. Source material and any likenesses or voices must be owned or used with permission. AI does not change rights in copyrighted materials.
+These are **automatic editing/synthesis tools, NOT generative machine-learning video or image reconstruction**. They do not magically transfer copyright in uploaded material. A truly generative, almost-photorealistic video recreation without external AI APIs would require installing and running substantial open-source video model weights on suitable GPU hardware, a separate next phase. Do not imply any copyright detection evasion or ownership transfer.
 
-## Local setup
+## Why this version is usable without API keys
 
-Requires Node 20+, FFmpeg/ffprobe, and API keys.
+The browser sends media only to this authenticated website, and the site processes it using FFmpeg, procedural graphics/music, and local speech synthesis. No Runway, Replicate or OpenAI keys are needed for the one-click mode. Railway hosting/resources still cost money. The old provider-based endpoints remain in source for possible future development but the primary interface does not call them.
 
-1. Copy .env.example to .env and set ADMIN_PASSWORD (12+ characters), SESSION_SECRET (24+ characters), and the relevant AI keys.
-2. Run npm install.
-3. With Node 22, run node --env-file=.env src/server.js (or export variables before npm start).
-4. Open http://localhost:3000 and sign in.
-5. Run npm test to check core validators.
+## Deployment
 
-## Railway deployment
+The GitHub main branch is connected to Railway project **Bajo Mundo AI Studio**, service **ai-studio-web**.
 
-1. Deploy this GitHub repository using its Dockerfile in a separate Railway project.
-2. In Railway Variables set ADMIN_PASSWORD, SESSION_SECRET, TRUST_PROXY=1 and desired provider keys.
-3. Attach a persistent Railway volume at /data.
-4. Generate a Railway HTTPS domain and verify /healthz.
-5. Sign in and start with a small image or 2–5 second video.
+- Dockerfile installs FFmpeg and eSpeak-NG.
+- Railway volume at `/data` stores exported creations and metadata.
+- `ADMIN_PASSWORD` (12+ chars), `SESSION_SECRET` (24+ chars), `NODE_ENV=production`, `TRUST_PROXY=1`, and `DATA_DIR=/data` are required/recommended. Keep them in Railway variables, not GitHub.
+- Use the generated Railway domain on HTTPS; root page is password protected (media/results routes require login).
+- The built-in job queue processes one media item at a time to avoid saturating CPU. Queued/in-flight work does not persist through deployments; interrupted jobs are marked failed after restart.
+- Uploaded originals are deleted after processing. Generated outputs stay on the attached volume until deleted.
+- Build checks include a live local end-to-end test that logs in, creates beat/poster, enhances image and video, and downloads each output **without any third-party API keys**.
 
-Variables:
-- RUNWAYML_API_SECRET for video-to-video
-- REPLICATE_API_TOKEN for images and original music
-- OPENAI_API_KEY for original narration and creative writing
-- DATA_DIR=/data for stored job records and outputs
-- OPENAI_TEXT_MODEL optional, default gpt-4.1-mini
+## Current limitations
 
-Never put secrets into code or GitHub.
+No video semantic scene changes, copyrighted-video reconstruction, celebrity voice cloning, full neural AI generation, automatic subtitles, or automatic background replacement. CPU-based filters are not generative AI. Large/long files may require more CPU, disk, time or a dedicated worker.
 
-## Limits and costs
+The app uses the basic express-session memory store for one owner. Before opening this to additional users, upgrade sessions to a persistent store, add account roles, quota policies and media retention rules.
 
-- Runway video editing currently accepts 2–30-second clips up to 200MB. Long videos require segmentation, queuing and stitching in a later iteration.
-- Image edits: JPG/PNG/WebP up to 9MB.
-- Music choices: 15–180 seconds.
-- Inputs are deleted from the studio server after submission to the provider. Output files remain until removed in the UI.
-- Providers charge separately from Railway or ChatGPT. Usage can grow rapidly, especially with video.
-- Provider CDN outputs and generation success are not guaranteed. Keep local backups.
-- OpenAI Speech model is deprecated and scheduled to shut down January 6, 2027. Migrate before then.
+## Later upgrade path
 
-## Security and ownership
-
-Single-owner password-gated app. Do not expose it publicly before configuring passwords and reviewing provider data policies. The generated media is your project output; third-party rights may still apply. This software is not designed to bypass copyright matching or replicate someone else's voice without consent. For future public SaaS launch, add robust job queues, Redis-backed sessions, 2FA, per-user accounts, payment controls, an audit log, media scanning, and retention enforcement.
-
-## Next phase
-
-Long-form video, image-to-video, sound effects, dubbing, captions, documents, 3D assets, batch creation, model comparisons and before/after views.
+For real generative AI with no external provider APIs, introduce local GPU model workers (e.g., locally deployed image/video diffusion and speech models), model download/licensing review, GPU cost controls, a durable queue, and automated shot analysis, then connect them to the same upload-first interface.
